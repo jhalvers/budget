@@ -136,21 +136,21 @@
             if(localStorage.getItem("jwt") != null) {
                 console.log("you are logged in");
                 document.getElementById("logged_in").style.display = "block";
-            }
-            else{
-                console.log("you are not logged in");
-                document.getElementById("not_logged_in").style.display = "block";
-            }
-            
-            setTimeout(function(){
+                setTimeout(function(){
             console.log("you have 20 seconds left");
             document.getElementById("still_logged_in").style.display = "block";
             }, 40000); 
 
             setTimeout(function(){
             localStorage.removeItem('jwt')
-            window.location.href = 'http://localhost:3000/';
+            window.location.href = '/';
             }, 60000);
+            }
+            else{
+                console.log("you are not logged in");
+                document.getElementById("not_logged_in").style.display = "block";
+            }
+            
         }
         
         function twenty() {
@@ -175,7 +175,7 @@
         function logout() {
             setTimeout(function(){
             localStorage.removeItem('jwt')
-            window.location.href = 'http://localhost:3000/';
+            window.location.href = '/';
             }, 1);  
         }
 

@@ -71,61 +71,27 @@
         </main>
     </div>
 
-    <!-- <div class="container-fluid">
-        <h1 class="row">Configure Budget</h1>
-        <main>
-            <form action="/api/configure" method="POST">
-                <label for="username">Username: </label>
-                <input type="text" name="username"/><br>
-                <label for="budgetName">Budget Name: </label>
-                <input type="text" name="budgetName"/><br>
-                <label for="budget">Budget: </label>
-                <input type="number" name="budget"/><br>
-                <input type="submit"/><br>
-            </form>
-        </main>
-    </div> -->
-
     <script>
-        
-        function login() {
-            const data = {
-                username: document.getElementById('username').value,
-                password: document.getElementById('password').value,
-            };
-            axios.post('/api/login', data)
-            .then(res => {
-                console.log(res);
-                document.getElementById('username').value = '';
-                document.getElementById('password').value = '';
-                if (res && res.data && res.data.success) {
-                    const token = res.data.token;
-                    localStorage.setItem('jwt', token);
-                    //getDashboard();
-                    //getSettings()
-                }
-            });
-        }
 
         function checkJWT() {
             if(localStorage.getItem("jwt") != null) {
                 console.log("you are logged in");
                 document.getElementById("logged_in").style.display = "block";
-            }
-            else{
-                console.log("you are not logged in");
-                document.getElementById("not_logged_in").style.display = "block";
-            }
-            
-            setTimeout(function(){
+                setTimeout(function(){
             console.log("you have 20 seconds left");
             document.getElementById("still_logged_in").style.display = "block";
             }, 40000); 
 
             setTimeout(function(){
             localStorage.removeItem('jwt')
-            window.location.href = 'http://localhost:3000/';
+            window.location.href = '/';
             }, 60000);
+            }
+            else{
+                console.log("you are not logged in");
+                document.getElementById("not_logged_in").style.display = "block";
+            }
+            
         }
         
         function twenty() {
@@ -175,22 +141,20 @@
         function logout() {
             setTimeout(function(){
             localStorage.removeItem('jwt')
-            window.location.href = 'http://localhost:3000/';
+            window.location.href = '/';
             }, 1);  
         }
         
-        function onLoad() {
-            const token = localStorage.getItem('jwt');
-            if (token) {
-                getDashboard();
-            }
-        }
-        //onLoad();
     </script>
 
     <footer class="bottom" aria-label="footer of page">
+        <!-- This is a Semantic HTML Change: changed div to footer -->
+        <!-- This is an A11y Change: added aria-label to describe purpose of class -->
         <div class="center" aria-label="footer of page">
             All rights reserved &copy; Jay Halverson
+            <a href="https://validator.w3.org/">html-validator</a>
+            <a href="https://jigsaw.w3.org/css-validator/">css-validator</a>
+        <!-- This is an SEO Change: added html and css validator to enhance performance -->
         </div>
     </footer>
     

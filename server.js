@@ -23,7 +23,7 @@ app.use('/', express.static('public'));
 app.use(compression());
 
 app.use((req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
+    res.setHeader('Access-Control-Allow-Origin', 'http://104.236.23.176/');
     res.setHeader('Access-Control-Allow-Headers', 'Content-type,Authorization');
     next();
 });
