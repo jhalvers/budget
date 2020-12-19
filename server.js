@@ -29,7 +29,6 @@ app.use((req, res, next) => {
 });
 
 let url = 'mongodb://localhost:27017/mongodb_final_project';
-
 const PORT = 3000;
 
 const secretKey = 'My super secret key';
@@ -38,79 +37,64 @@ const jwtMW = exjwt({
     algorithms: ['HS256']
 });
 
+//mongoose for login
 app.post('/api/login', (req, res) => {
-
-    //const { username, password } = req.body;
     mongoose.connect(url, {useNewUrlParser: true, useUnifiedTopology: true})
     .then(()=>{
        console.log("Connected to db");
         namesModel.find()
                .then((data)=>{
                    console.log(data)
-                   //namesModel.find({username});
-                //    res.json(data);
-                //    res.send(data);
                    const { username, password } = req.body;
-                   //users=data;
                    for (let user of data) {
                     if (username == user.username && password == user.password) {
                         if(username == user.username && password == user.password) {
-                            let token = jwt.sign({ username: user.username }, secretKey, { expiresIn: '1m'});
-                        // id: user.id, 
+                            let token = jwt.sign({ username: user.username }, secretKey, { expiresIn: '1m'}); 
                         res.json({
                             success: true,
                             err: null,
                             token
                         });
                         break;
-                        }
-                        else {
+                        } else {
                             res.status(401).json({
                                 success: false,
                                 token: null,
                                 err: 'Username or password is incorrect'
                             });
                         }
-                    }
-                    
+                    }                   
                 }
                 console.log(req.headers.authorization);
                    mongoose.connection.close();
-
                })
                .catch((connectionError)=>{
                    console.log(connectionError)
                })
     })
-    // get-budget 
-    // post-budget
-    
     .catch((connectionError)=>{
        console.log(connectionError)
     })
-
 });
 
-app.post('/api/twenty', (req, res) => {
+//mongoose for timer
+app.post('/api/timer', (req, res) => {
     console.log(req.headers.authorization);
     const authHeader = req.headers.authorization;
     if (authHeader){
-        const token = authHeader.split(' ')[1];
+        let token = authHeader.split(' ')[1];
         jwt.verify(token, secretKey, (err, data)=>{
             if (err){res.send(err)}
             const decoded = jwt.verify(token, secretKey);
             console.log(decoded.username);
     mongoose.connect(url, {useNewUrlParser: true, useUnifiedTopology: true})
     
-    let token = jwt.sign({ username: decoded.username }, secretKey, { expiresIn: '1m'});
-                        // id: user.id, 
+    token = jwt.sign({ username: decoded.username }, secretKey, { expiresIn: '1m'}); 
                         res.json({
                             success: true,
                             err: null,
                             token
                         });
-
-                
         }); 
     } else {
         res.sendStatus(403).send("Error 403")
@@ -132,7 +116,6 @@ app.get('/api/signedup', (req, res) => {
     namesModel.find()
            .then((data)=>{
                console.log(data)
-               //namesModel.find({username});
                res.json(data);
                res.send(data)
                mongoose.connection.close();
@@ -148,15 +131,12 @@ app.get('/api/signedup', (req, res) => {
 });
 
 app.get('/api/configureData', (req, res) => {
-    //const token = req.cookies.jwt;
-    //console.log(token);
     mongoose.connect(url, {useNewUrlParser: true, useUnifiedTopology: true})
 .then(()=>{
    console.log("Connected to db");
    configureModel.find()
            .then((data)=>{
                console.log(data)
-               //namesModel.find({username});
                res.json(data);
                res.send(data)
                mongoose.connection.close();
@@ -172,15 +152,12 @@ app.get('/api/configureData', (req, res) => {
 });
 
 app.get('/api/expenseData', (req, res) => {
-    //const token = req.cookies.jwt;
-    //console.log(token);
     mongoose.connect(url, {useNewUrlParser: true, useUnifiedTopology: true})
 .then(()=>{
    console.log("Connected to db");
    expenseModel.find()
            .then((data)=>{
                console.log(data)
-               //namesModel.find({username});
                res.json(data);
                res.send(data)
                mongoose.connection.close();
@@ -196,8 +173,6 @@ app.get('/api/expenseData', (req, res) => {
 });
 
 app.post('/api/signup', (req, res) => {
-    // TODO: Insert data 
-    // id, title, color {id: req.body.id, budget: req.body.title }
     mongoose.connect(url, {useNewUrlParser: true, useUnifiedTopology: true})
     console.log(req.body.username);
     const newData = new namesModel({
@@ -212,14 +187,10 @@ app.post('/api/signup', (req, res) => {
     })
     .catch((connectionError)=>{
         console.log(connectionError)
-    })
-    
+    })  
 });
 
 app.post('/api/configure', (req, res) => {
-    // extract the token from the header 
-    // token verification jwt.verify() (Decode)
-    // extract the username from the verified token 
     console.log(req.headers.authorization);
     const authHeader = req.headers.authorization;
     if (authHeader){
@@ -239,7 +210,6 @@ app.post('/api/configure', (req, res) => {
     .then((data)=>{
         console.log(data)
         res.send(data)
-        //window.location.href = 'http://localhost:3000/';
         mongoose.connection.close();
     })
     .catch((connectionError)=>{
@@ -254,17 +224,12 @@ app.post('/api/configure', (req, res) => {
 });
 
 app.post('/api/expense', (req, res) => {
-    // extract the token from the header 
-    // token verification jwt.verify() (Decode)
-    // extract the username from the verified token 
     console.log(req.headers.authorization);
     const authHeader = req.headers.authorization;
     if (authHeader){
         const token = authHeader.split(' ')[1];
         jwt.verify(token, secretKey, (err, data)=>{
             if (err){res.send(err)}
-            //connect to the database 
-            // perform 
             const decoded = jwt.verify(token, secretKey);
             console.log(decoded.username);
     mongoose.connect(url, {useNewUrlParser: true, useUnifiedTopology: true})
@@ -279,18 +244,15 @@ app.post('/api/expense', (req, res) => {
     .then((data)=>{
         console.log(data)
         res.send(data)
-        //window.location.href = 'http://localhost:3000/';
         mongoose.connection.close();
     })
     .catch((connectionError)=>{
         console.log(connectionError)
-    })
-                
+    })             
         }); 
     } else {
         res.sendStatus(403).send("Error 403")
     }
-
 });
 
 app.get('/api/settings', jwtMW, (req, res) => {
@@ -326,8 +288,7 @@ app.get('/', (req, res) => {
               officialError: err,
               err: 'Username or password is incorrect 2'
           });
-      }
-      else {
+      } else {
           next(err);
       }
   });

@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="keywords" content="HTML, CSS, JavaScript">
-    <!-- This is an SEO Change: added metatag for keywords -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Personal Budget</title>
+    <title>Personal Budget Dashboard</title>
+    <!-- a11y Change: added unique title  for each page--> 
     <link rel="stylesheet" href="reset.css">
     <link rel="stylesheet" href="main.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
@@ -16,8 +16,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.20.0/axios.min.js" integrity="sha512-quHCp3WbBNkwLfYUMd+KwBAgpVukJu5MncuQaWXgCrfgcxCJAq/fo+oqrRKOj+UKEmyMCG3tb8RB63W+EmrOBg==" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js" integrity="sha512-s+xg36jbIujB2S2VKfpGmlC3T5V2TF3lY48DX7u2r9XzGzgPsa6wTpOQA7J9iffvdeBN0q9tKzRxVxw1JviZPg==" crossorigin="anonymous"></script>
     <script src="https://d3js.org/d3.v3.min.js"></script>
-    <nav class="menu">
-        <!-- This is a Semantic HTML Change: changed div to nav -->
+        
+    <!-- a11y Change: added aria-label to say what is the purpose of the top of the page -->
+        <nav class="menu" aria-label="navigation bar">
+        <!-- Semantic HTML Change: changed div to nav -->
         <ul>
             <li><a href="/">Home</a></li>
             <li><a href="dashboard.html">Dashboard</a></li>
@@ -26,20 +28,14 @@
             <li><a onclick="logout()">Logout</a></li>
             
             <a class="skip-to-content-link" href="#main">
-                <h2>Skip to content</h2>
               </a>
-              <!-- This is an A11y Change: added skip to content link -->
         </ul>
     </nav>
 
-
-    
-    <header class="hero" aria-label="header of page">
-        <!-- This is an A11y Change: added aria-label to describe purpose of class -->
-        <!-- This is a Semantic HTML Change: changed div to header-->
+    <!-- Semantic HTML Change: changed div to header-->
+    <header class="hero">
         <h1>Personal Budget</h1>
         <h2>A personal-budget management app</h2>
-        
     </header>
 
     <body onload="checkJWT()">
@@ -49,7 +45,7 @@
 
     <body onload="checkJWT()">
         <div id="still_logged_in" style="display: none">You have 20 seconds left</div>
-        <button onclick="twenty()">Stay Logged in</button>
+        <button onclick="timer()">Stay Logged in</button>
     </body>
 
     <div class="text-box">
@@ -116,6 +112,7 @@
             });
         }
 
+        //Creates bar chart
         function createChartTwo() {
             var ctx = document.getElementById("mySecondChart").getContext("2d");
             var myPieChart = new Chart(ctx, {
@@ -124,6 +121,7 @@
             });
         }
 
+        //Creates line chart
         function createChartThree() {
             var ctx = document.getElementById("myThirdChart").getContext("2d");
             var myPieChart = new Chart(ctx, {
@@ -153,25 +151,26 @@
             
         }
         
-        function twenty() {
+        //function for timer
+        function timer() {
             if(localStorage.getItem("jwt") == null){
             }
             else{
             let token = localStorage.getItem('jwt');
-            axios.post('/api/twenty', null, {
+            axios.post('/api/timer', null, {
                 headers: { Authorization: `Bearer ${token}` }
             })
             .then(res => {
                 if (res && res.data && res.data.success) {
                     token = res.data.token;
                     localStorage.setItem('jwt', token);
-                    //getDashboard();
-                    //getSettings()
+                    window.location.href = '/dashboard.html';
                 }
             });
         }
     }
 
+    //Logout function
         function logout() {
             setTimeout(function(){
             localStorage.removeItem('jwt')
@@ -179,9 +178,9 @@
             }, 1);  
         }
 
+//Gets the budget
         function getMongoBudget() {
             if(localStorage.getItem("jwt") == null){
-                //break;
             }
             else{
             axios.get('/api/configureData')
@@ -196,28 +195,23 @@
                         count++;
                         dataSource.labels[count]=res.data[i].budgetName;
                     dataSource.datasets[0].data[count]=res.data[i].budget;
-                    //dataSource.datasets[0].backgroundColor[i]=res.data[i].color;
                     dataSource.datasets[0].backgroundColor[count]='#'+(Math.random()*0xFFFFFF<<0).toString(16);
                     }
                 }
-                //console.log(typeof dataSource);
                 var data = dataSource.datasets[0].data;
                 var labels = dataSource.labels;
                 console.log(data);
                 console.log(labels);
-                //var user = sessionStorage.getItem("user");
                 console.log(user);
-                //dataSource.data = res.data.myBudget;
                 createChart();
-                //change(dataSource.datasets.data);
             });
         }
         }
         getMongoBudget();
         
+        //Gets the expense for the budget
         function getExpenseMongoBudget() {
             if(localStorage.getItem("jwt") == null){
-                //break;
             }
             else{
             axios.get('/api/expenseData')
@@ -232,27 +226,22 @@
                         count++;
                         dataSourceTwo.labels[count]=res.data[i].budgetName;
                     dataSourceTwo.datasets[0].data[count]=res.data[i].budgetSpent;
-                    //dataSource.datasets[0].backgroundColor[i]=res.data[i].color;
                     }
                 }
-                //console.log(typeof dataSource);
                 var data = dataSourceTwo.datasets[0].data;
                 var labels = dataSourceTwo.labels;
                 console.log(data);
                 console.log(labels);
-                //var user = sessionStorage.getItem("user");
                 console.log(user);
-                //dataSource.data = res.data.myBudget;
                 createChartTwo();
-                //change(dataSource.datasets.data);
             });
         }
         }
         getExpenseMongoBudget();
 
+        //Gets the month for the budget
         function getMonthMongoBudget() {
             if(localStorage.getItem("jwt") == null){
-                //break;
             }
             else{
             axios.get('/api/expenseData')
@@ -265,9 +254,6 @@
                     if(user==res.data[i].username)
                     {
                         count++;
-                    //     dataSourceThree.labels[count]=res.data[i].budgetName;
-                    // dataSourceThree.datasets[0].data[count]=res.data[i].budgetSpent;
-                    // console.log(res.data[i].month);
                     if(res.data[i].month == "January")
                     {
                         dataSourceThree.datasets[0].data[0] += res.data[i].budgetSpent;
@@ -316,37 +302,25 @@
                     {
                         dataSourceThree.datasets[0].data[11] += res.data[i].budgetSpent;
                     }
-
                     }
-
                 }
-                //console.log(typeof dataSource);
+
                 var data = dataSourceTwo.datasets[0].data;
                 var labels = dataSourceTwo.labels;
                 console.log(data);
                 console.log(labels);
-                //var user = sessionStorage.getItem("user");
                 console.log(user);
-                //dataSource.data = res.data.myBudget;
                 createChartThree();
-                //change(dataSource.datasets.data);
             });
         }
         }
         getMonthMongoBudget();
     </script>
-
-    <footer class="bottom" aria-label="footer of page">
-        <!-- This is a Semantic HTML Change: changed div to footer -->
-        <!-- This is an A11y Change: added aria-label to describe purpose of class -->
-        <div class="center" aria-label="footer of page">
-            All rights reserved &copy; Jay Halverson
-            <a href="https://validator.w3.org/">html-validator</a>
-            <a href="https://jigsaw.w3.org/css-validator/">css-validator</a>
-        <!-- This is an SEO Change: added html and css validator to enhance performance -->
-        </div>
-    </footer>
-    
+    <!-- a11y Change: added aria-label to say what is the purpose of the bottom of the page -->
+<footer class="bottom" aria-label="footer">
+    <div class="center" aria-label="footer">
+           All rights reserved &copy; Jay Halverson
+   </div>
+   </footer>
 </body>
-
 </html>
